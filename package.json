@@ -1,12 +1,26 @@
 {
   "name": "LiriBot",
   "version": "1.0.0",
-  "description": "",
   "main": "keys.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^5.0.0",
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Trodrigs1120/LiriBot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Trodrigs1120/LiriBot/issues"
+  },
+  "homepage": "https://github.com/Trodrigs1120/LiriBot#readme",
+  "description": ""
 }
