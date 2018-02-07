@@ -1,10 +1,19 @@
 require("dotenv").config();
-var curl = require('curlrequest');
+var twitter = require('twitter');
+var spotify = require('spotify');
+var fs = require('fs');
+var keys = require('./keys');
 
 
-
-// var spotify = new Spotify(keys.spotify);
-// var client = new Twitter(keys.twitter);
+ //var spotify = new Spotify(keys.spotify);
+//  var client = new Twitter(keys.twitter);
+var client = new twitter({
+  consumer_key: keys.twitterKeys.consumer_key,
+  consumer_secret: keys.twitterKeys.consumer_secret,
+  access_token_key: keys.twitterKeys.access_token_key,
+access_token_secret: keys.twitterKeys.access_token_secret, 
+});
+console.log(client)
 
 // locations of keys
 console.log("Spotify Secret: "+process.env.SPOTIFY_SECRET)
@@ -32,6 +41,13 @@ function GetTweets(){
       console.log('response:' , response)
     });
 }
+
+
+
+
+
+
+
 
 function SpotifyASong(){
     var request = require('request');
