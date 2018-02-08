@@ -56,6 +56,8 @@ function spotifyThisSong(songName) {
     id: keys.spotify.id,
     secret: keys.spotify.secret
   });
+  
+  
   var songName = Input;
   var space = "\n" + "\n" +"\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
   if(!songName){
@@ -77,10 +79,10 @@ function spotifyThisSong(songName) {
       console.log(output);
         
         
-        
-      };
-  });
     
+        };
+    });
+  
 }
 // =
 
@@ -91,11 +93,11 @@ function spotifyThisSong(songName) {
 function GetMovieInfo(){
     var request = require("request");
     var movieName = "";
-    if (process.argv[3]!==undefined){
-      movieName = encodeURI(process.argv[3])
+    if (Input!==undefined){
+      movieName = encodeURI(Input)
     } else {
       movieName = "Mr. Nobody"
-      console.log("Hey if you havent seen it, Mr Nobody is on netflix assuming you have that kind of thing ;)")
+      console.log("Hey if you havent seen it, Mr Nobody is on netflix assuming you have that kind of thing")
     }
     
       var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
@@ -123,17 +125,46 @@ switch(argument2){
     myTweets();
     break;
     case "spotify-this-song":
-    console.log("Spotify this song")
+    
     spotifyThisSong()
     break;
     case "movie-this":
-    console.log("Movie-this")
+   
     GetMovieInfo()
     break;
     case "do-what-it-says":
-    console.log("Do what it says")
-    var dowhatitsays=true;
-    // triggers spotify function but skips to playing other song
-    spotifyThisSong()
-    break;
+   
+    fs.readFile("random.txt", 'utf8' ,function(error, data) {
+			if (error) throw error;
+			// a = data.split(',');
+			loggedTxt = data.split(',');
+			console.log(loggedTxt);
+
+			var command;
+			var selection ;
+
+			command = loggedTxt[0];
+			selection = loggedTxt[1];
+
+			selection = selection.replace('"', '');
+			selection = selection.replace('"', '');
+			// console.log(parameter);
+
+    switch (command) {
+      case 'my-tweets':
+          Input = selection;
+          myTweets();
+          break;
+
+      case 'spotify-this-song':
+          Input = selection;
+          spotifyThisSong();
+          break;
+
+      case 'movie-this':
+          Input = selection;
+          movieThis();
+          break;
+        }
+})
 }
