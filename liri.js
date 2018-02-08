@@ -1,65 +1,95 @@
 require("dotenv").config();
 var twitter = require('twitter');
-var spotify = require('spotify');
+var Spotify = require('node-spotify-api');
 var fs = require('fs');
 var keys = require('./keys');
-
+var argument2 = process.argv[2];
+var Input= process.argv[3]
 
  //var spotify = new Spotify(keys.spotify);
 //  var client = new Twitter(keys.twitter);
 var client = new twitter({
-  consumer_key: keys.twitterKeys.consumer_key,
+  consumer_key: process.env.TWITTER_CONSUMER_KEY,
   consumer_secret: keys.twitterKeys.consumer_secret,
   access_token_key: keys.twitterKeys.access_token_key,
 access_token_secret: keys.twitterKeys.access_token_secret, 
 });
-console.log(client)
 
-// locations of keys
-console.log("Spotify Secret: "+process.env.SPOTIFY_SECRET)
-console.log("Spotify id: "+process.env.SPOTIFY_ID)
-console.log("Twitter access Token: "+process.env.TWITTER_ACCESS_TOKEN_KEY)
-console.log("Twitter access Token Secret: "+process.env.TWITTER_ACCESS_TOKEN_SECRET)
-console.log("Twitter Consumer Key: "+process.env.TWITTER_CONSUMER_KEY)
-console.log("Twitter consumer Secret:"+process.env.TWITTER_CONSUMER_SECRET)
- 
 
-// Commands To incorporate 
-// * `my-tweets`
-
-// * `spotify-this-song`
-
-// * `movie-this`
-
-// * `do-what-it-says`
-
-// get tweets requires auth and i'm to mad to deal with twitters api docs atm
-function GetTweets(){
-    var request = require('request');
-    request('https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name='+'Taylor11355348'+'&count=2', function (error, response) {
-      console.log('error:', error); // Print the error if one occurred
-      console.log('response:' , response)
-    });
+function myTweets() {
+  var client = new twitter({
+    consumer_key: keys.twitterKeys.consumer_key,
+    consumer_secret: keys.twitterKeys.consumer_secret,
+    access_token_key: keys.twitterKeys.access_token_key,
+    access_token_secret: keys.twitterKeys.access_token_secret, 
+  });
+  var twitterUsername = Input;
+  if(!twitterUsername){
+    twitterUsername = "Taylor11355348";
+  }
+  var space = "\n" + "\n" +"\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
+  params = {screen_name: twitterUsername};
+  client.get("statuses/user_timeline/", params, function(error, data, response){
+    if (!error) {
+      for(var i = 0; i < data.length; i++) {
+        //console.log(response); // Show the full response in the terminal
+        var twitterResults = 
+        space +"@" + data[i].user.screen_name + ": " + 
+        space + data[i].text + "\r\n" + 
+        space +data[i].created_at + "\r\n" + 
+        "------------------------------ " + i + " ------------------------------" + "\r\n";
+         console.log(twitterResults);
+        
+      }
+    }  else {
+      console.log("Error :"+ error); 
+      return;
+    }
+  });
 }
 
 
+// edit both the above functions
+function spotifyThisSong(songName) {
 
+  var spotify = new Spotify({
+    id: keys.spotify.id,
+    secret: keys.spotify.secret
+  });
+  var songName = Input;
+  var space = "\n" + "\n" +"\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
+  if(!songName){
+    SongName = "What's my age again";
+  }
 
-
-
-
-
-function SpotifyASong(){
-    var request = require('request');
-    var SongName = process.argv[3]
-    request("https://api.spotify.com/v1/search?q=Hacker&type=track&market=US"+ -H +"Accept: application/json" +-H+ "Authorization: Bearer BQCnmJXDDSQlrAjETLHMy0vT0Np6_VAUUEyZQk_yKYRagD7mZss4NXVmJKDLE9nhOIe3rX3-99I8LXhYxFPU6RWi3y-r3_bkDuMfpP8ch5Mn3X-h9aXqwGkqa0Z0-wOGIRLxGMVawTky9Q", function (error, response) {
-      console.log('error:', error); // Print the error if one occurred
-      console.log('response:' , response)
-    });
+  params = songName;
+  spotify.search({ type: 'track', query: params }, function(err, data) {
+    if ( err ) {
+        console.log('Error occurred: ' + err);
+        return;  
+    }
+    else{
+      output ="-------------------------------------------------------------" + "\r\n"+
+      space + "Song Name: " + "'" +songName.toUpperCase()+ "'" +
+      space + "Album Name: " + data.tracks.items[0].album.name +
+      space + "Artist Name: " + data.tracks.items[0].album.artists[0].name +	
+      space + "URL: " + data.tracks.items[0].album.external_urls.spotify + "\n\n\n";
+      console.log(output);
+        
+        
+        
+      };
+  });
+    
 }
+// =
+
+
+
+
+
 function GetMovieInfo(){
     var request = require("request");
-    var nodeArgs = process.argv;
     var movieName = "";
     if (process.argv[3]!==undefined){
       movieName = encodeURI(process.argv[3])
@@ -87,15 +117,14 @@ function GetMovieInfo(){
     });
     }
 
-var argument2 = process.argv[2];
+
 switch(argument2){
     case "my-tweets":
-    console.log("My Tweet")
-    GetTweets();
+    myTweets();
     break;
     case "spotify-this-song":
     console.log("Spotify this song")
-    SpotifyASong()
+    spotifyThisSong()
     break;
     case "movie-this":
     console.log("Movie-this")
@@ -103,6 +132,8 @@ switch(argument2){
     break;
     case "do-what-it-says":
     console.log("Do what it says")
+    var dowhatitsays=true;
+    // triggers spotify function but skips to playing other song
+    spotifyThisSong()
     break;
 }
-
