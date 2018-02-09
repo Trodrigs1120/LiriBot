@@ -52,7 +52,7 @@ function spotifyThisSong(songName) {
     var songName = Input;
     var space = "\n" + "\n" + "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
     if (!songName) {
-        SongName = "What's my age again";
+        songName = "The Sign";
     }
 
     params = songName;
@@ -113,6 +113,7 @@ function GetMovieInfo() {
 
 
 switch (argument2) {
+
     case "my-tweets":
         myTweets();
         break;
@@ -125,38 +126,39 @@ switch (argument2) {
         GetMovieInfo()
         break;
     case "do-what-it-says":
+        ReadFile()
+        break;
+    default:
+        console.log("I didnt quite catch that, is " + argument2 + " a real command?")
+}
 
-        fs.readFile("random.txt", 'utf8', function(error, data) {
-            if (error) throw error;
-            // a = data.split(',');
-            loggedTxt = data.split(',');
-           
+function ReadFile() {
+    fs.readFile("random.txt", 'utf8', function(error, data) {
+        if (error) throw error;
+        loggedTxt = data.split(',');
+        var command;
+        var selection;
+        command = loggedTxt[0];
+        selection = loggedTxt[1];
+        selection = selection.replace('"', '');
+        selection = selection.replace('"', '');
 
-            var command;
-            var selection;
+        console.log("Arguement: " + command + " Search: " + selection);
+        switch (command) {
+            case 'my-tweets':
+                Input = selection;
+                myTweets();
+                break;
 
-            command = loggedTxt[0];
-            selection = loggedTxt[1];
+            case 'spotify-this-song':
+                Input = selection;
+                spotifyThisSong();
+                break;
 
-            selection = selection.replace('"', '');
-            selection = selection.replace('"', '');
-            // console.log(parameter);
-            console.log("Arguement: "+command + " Search: "+ selection);
-            switch (command) {
-                case 'my-tweets':
-                    Input = selection;
-                    myTweets();
-                    break;
-
-                case 'spotify-this-song':
-                    Input = selection;
-                    spotifyThisSong();
-                    break;
-
-                case 'movie-this':
-                    Input = selection;
-                    movieThis();
-                    break;
-            }
-        })
+            case 'movie-this':
+                Input = selection;
+                movieThis();
+                break;
+        }
+    })
 }
